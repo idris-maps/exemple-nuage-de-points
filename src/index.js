@@ -8,7 +8,7 @@ import {
   bottomAxis,
   leftAxis,
 } from './elements'
-import { data } from './getData'
+import { data } from './data'
 import {
   MARGIN,
   GRAPH_HEIGHT,

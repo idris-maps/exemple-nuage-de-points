@@ -1,5 +1,5 @@
 import * as d3 from 'd3'
-import { data, indicateurs } from './getData'
+import { data, indicateurs } from './data'
 import {
   WIDTH,
   HEIGHT,
