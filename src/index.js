@@ -15,34 +15,40 @@ import {
   GRAPH_WIDTH,
 } from './config'
 
-selectX
-  .on('change', function() {
-    const key = this.value
-    const xScale = d3.scaleLinear()
-      .domain(d3.extent(data.map(d => d[key])))
-      .range([MARGIN, GRAPH_WIDTH - MARGIN])
-    
-    xAxis.scale(xScale)
+selectX.node().addEventListener('change', e => {
+  const key = e.target.value
+  const xScale = d3.scaleLinear()
+    .domain(d3.extent(data.map(d => d[key])))
+    .range([MARGIN, GRAPH_WIDTH - MARGIN])
+  
+  xAxis.scale(xScale)
 
-    circles.transition()
-      .attr('x', d => xScale(d[key]))
-    
-    bottomAxis.transition()
-      .call(xAxis)
-  })
+  circles.transition()
+    .attr('transform', function(d, i, elements) {
+      const currentTranslate = elements[i].getAttribute('transform')
+      const currentY = currentTranslate.split(',')[1].split(')')[0]
+      return `translate(${xScale(d[key])},${currentY})`
+    })
+  
+  bottomAxis.transition()
+    .call(xAxis) 
+})
 
-selectY
-  .on('change', function() {
-    const key = this.value
-    const yScale = d3.scaleLinear()
-      .domain(d3.extent(data.map(d => d[key])))
-      .range([GRAPH_HEIGHT, MARGIN])
+selectY.node().addEventListener('change', e => {
+  const key = e.target.value
+  const yScale = d3.scaleLinear()
+    .domain(d3.extent(data.map(d => d[key])))
+    .range([GRAPH_HEIGHT, MARGIN])
 
-    yAxis.scale(yScale)
-    
-    circles.transition()
-      .attr('y', d => yScale(d[key]))
-    
-    leftAxis.transition()
-      .call(yAxis)
-  })
+  yAxis.scale(yScale)
+  
+  circles.transition()
+    .attr('transform', (d, i, elements) => {
+      const currentTranslate = elements[i].getAttribute('transform')
+      const currentX = currentTranslate.split(',')[0].split('(')[1]
+      return `translate(${currentX},${yScale(d[key])})`
+    })
+  
+  leftAxis.transition()
+    .call(yAxis)
+})

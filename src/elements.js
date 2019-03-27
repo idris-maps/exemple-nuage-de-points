@@ -7,6 +7,7 @@ import {
   CIRCLE_RADIUS,
   SWISS_FLAG_URL,
 } from './config'
+
 const body = d3.select('body')
 
 export const selectX = body.append('select')
@@ -30,14 +31,33 @@ selectY.selectAll('option')
 export const svg = body.append('svg')
   .attr('viewBox', `0 0 ${WIDTH} ${HEIGHT}`)
 
-export const circles = svg.selectAll('image')
+const defs = svg.append('defs')
+  .append('clipPath')
+    .attr('id', 'circle-clip')
+    .append('circle')
+      .attr('cx', CIRCLE_RADIUS)
+      .attr('cy', CIRCLE_RADIUS)
+      .attr('r', CIRCLE_RADIUS)
+/*
+  <defs>
+    <clipPath id="c">
+      <circle cx="20" cy="20" r="20" />
+    </clipPath>
+  </defs>
+*/
+
+const circleGroup = svg.append('g')
+  .attr('transform', `translate(${-CIRCLE_RADIUS},${-CIRCLE_RADIUS})`)
+
+export const circles = circleGroup.selectAll('image')
   .data(data)
   .enter()
   .append('image')
   .attr('width', CIRCLE_RADIUS * 2)
   .attr('height', CIRCLE_RADIUS * 2)
   .attr('xlink:href', SWISS_FLAG_URL)
-  //.attr('r', CIRCLE_RADIUS)
+  .attr('clip-path', 'url(#circle-clip)')
+  .attr('transform', 'translate(0,0)')
 
 export const xAxis = d3.axisBottom()
   .ticks(4)
